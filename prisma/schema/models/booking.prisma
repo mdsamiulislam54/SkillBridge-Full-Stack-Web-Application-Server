@@ -1,0 +1,14 @@
+model Booking {
+  id             String        @id @default(uuid())
+  userId         String
+  
+  tutorProfileId String
+  categoryId     String
+  sessionDate    String
+  startDate      String
+  bookingStatus  BookingStatus
+  note           String?
+  paymentStatus  PaymentStatus
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}

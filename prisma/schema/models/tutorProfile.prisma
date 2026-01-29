@@ -1,0 +1,23 @@
+model TutorProfile {
+  id              String         @id @default(uuid())
+  userId          String
+  name            String
+  bio             String
+  education       String
+  experienceYears String
+  hourlyRate      Int
+  teachingMode    String
+  isAvailable     Boolean
+  approvalStatus  ApprovalStatus
+  categories      String[]
+  sessionDuration Int?
+  averageRating   Float?
+  profileImage    String?
+  coverImage      String?
+  languages       String[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([id, userId])
+  @@map("tutors")
+}
