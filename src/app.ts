@@ -7,6 +7,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "../lib/auth";
 import AuthVerify, { userRole } from "./middleware/authVerify";
 import { errorHander } from "./middleware/errorHanding";
+import { tutorRoute } from "./modules/tutors/tutor.route";
 
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(cors({
 app.get('/health', AuthVerify(userRole.USER), (req, res) => {
     res.status(200).send('OK');
 });
+app.use('/api/tutor', tutorRoute);
 app.all('/api/auth/*splat', toNodeHandler(auth));
 
 app.use(errorHander)

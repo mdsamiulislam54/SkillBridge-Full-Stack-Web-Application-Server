@@ -8,10 +8,12 @@ export function errorHander(err: Error, req: Request, res: Response, next: NextF
     let errorMessage = 'Internal Server Error';
     const message = err.message || 'Internal Server Error';
 
-    if (err instanceof Error.ValidationError) {
+     if (err instanceof Prisma.PrismaClientValidationError) {
         statusCode = 400;
-        errorMessage = 'Validation Error';
-    } else if (err.name === 'CastError') {
+        errorMessage = "Invalid or missing request fields.";
+    }
+
+    else if (err.name === 'CastError') {
         statusCode = 400;
         errorMessage = 'Invalid ID Format';
     } else if (err instanceof SyntaxError) {
@@ -54,7 +56,7 @@ export function errorHander(err: Error, req: Request, res: Response, next: NextF
     });
 
     if (res.headersSent) {
-        return next(err);
+        return next(err.message);
     }
 
     return res.status(statusCode).json({
