@@ -5,6 +5,8 @@ import { config } from './config/config'
 import cors from 'cors'
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "../lib/auth";
+import AuthVerify, { userRole } from "./middleware/authVerify";
+import { errorHander } from "./middleware/errorHanding";
 
 
 dotenv.config();
@@ -19,10 +21,12 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
-app.get('/health', (req, res) => {
+app.get('/health', AuthVerify(userRole.USER), (req, res) => {
     res.status(200).send('OK');
 });
 app.all('/api/auth/*splat', toNodeHandler(auth));
+
+app.use(errorHander)
 
 
 export default app;
