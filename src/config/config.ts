@@ -8,6 +8,7 @@ export const config = {
     googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     googleClientId: process.env.GOOGLE_CLIENT_ID || "",
     appEmail: process.env.APP_EMAIL || "",
-    appUser: process.env.APP_USER || ""
+    appUser: process.env.APP_USER || "",
+    appUrl: process.env.APP_URL || "http://localhost:3000"
 
 }
