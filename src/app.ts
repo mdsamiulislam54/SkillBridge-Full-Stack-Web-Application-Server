@@ -22,7 +22,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
-app.get('/health', AuthVerify(userRole.USER), (req, res) => {
+app.get('/health', AuthVerify(userRole.STUDENT, userRole.ADMIN, userRole.TUTOR), (req, res) => {
     res.status(200).send('OK');
 });
 app.use('/api/tutor', tutorRoute);
