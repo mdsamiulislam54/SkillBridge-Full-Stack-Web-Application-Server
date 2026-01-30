@@ -3,7 +3,7 @@ model Booking {
   userId         String
   user           User          @relation(fields: [userId], references: [id])
   tutorProfileId String
-  tutorProfile   TutorProfile  @relation("TutorBookings",fields: [tutorProfileId], references: [id])
+  tutorProfile   TutorProfile  @relation("TutorBookings", fields: [tutorProfileId], references: [id])
   categoryId     String
   category       Categories    @relation(fields: [categoryId], references: [id])
   sessionDate    String?
@@ -13,7 +13,7 @@ model Booking {
   paymentStatus  PaymentStatus
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  reviews        Review[]  @relation("BookingToReview")
+  reviews        Review[]      @relation("BookingToReview")
 
   @@index([id, userId, tutorProfileId, categoryId])
 }

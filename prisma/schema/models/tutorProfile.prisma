@@ -20,6 +20,7 @@ model TutorProfile {
   updatedAt       DateTime       @updatedAt
   bookings        Booking[]      @relation("TutorBookings")
   reviews         Review[]       @relation("TutorToReview")
+  tutorSlots      TutorSlot[]    @relation("tutorSlots")
 
   @@index([id, userId])
   @@map("tutors")

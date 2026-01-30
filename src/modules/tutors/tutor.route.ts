@@ -8,6 +8,7 @@ tutorRouter.get('/', (req, res) => {
 });
 
 tutorRouter.post('/create', AuthVerify(userRole.ADMIN, userRole.TUTOR, userRole.STUDENT), tutorController.createTutorProfile);
+tutorRouter.post('/create/slots', AuthVerify(userRole.ADMIN, userRole.TUTOR, userRole.STUDENT), tutorController.createTutorSlots);
 
 
 export const tutorRoute = tutorRouter;

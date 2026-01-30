@@ -1,11 +1,11 @@
 model Review {
   id             String       @id @default(uuid())
   userId         String
-  user           User         @relation("UserToReview",fields: [userId], references: [id])
+  user           User         @relation("UserToReview", fields: [userId], references: [id])
   tutorProfileId String
-  tutorProfile   TutorProfile @relation("TutorToReview",fields: [tutorProfileId], references: [id])
+  tutorProfile   TutorProfile @relation("TutorToReview", fields: [tutorProfileId], references: [id])
   bookingId      String
-  booking        Booking      @relation("BookingToReview",fields: [bookingId], references: [id])
+  booking        Booking      @relation("BookingToReview", fields: [bookingId], references: [id])
   comment        String
   rating         Int?         @default(0)
 

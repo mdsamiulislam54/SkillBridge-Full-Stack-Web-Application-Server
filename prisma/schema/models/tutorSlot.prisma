@@ -1,0 +1,13 @@
+model TutorSlot {
+    id          String       @id @default(uuid())
+    tutorId     String
+    tutor       TutorProfile @relation("tutorSlots", fields: [tutorId], references: [id])
+    duration    String
+    startTime   String
+    teachingMode String
+    endTime     String
+    maxStudents String
+    isActive    Boolean      @default(false)
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+}

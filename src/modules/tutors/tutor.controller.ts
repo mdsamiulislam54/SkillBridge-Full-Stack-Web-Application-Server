@@ -14,6 +14,19 @@ const createTutorProfile = async (req: Request, res: Response, next: NextFunctio
         next(error)
     }
 }
+const createTutorSlots = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        console.log(req.body)
+        const tutor = await tutorService.createTutorSlots(req.body);
+        res.status(201).json({
+            message: 'Tutor profile created successfully',
+            data: tutor
+        })
+    } catch (error) {
+        console.error('Error creating tutor profile:', error);
+        next(error)
+    }
+}
 
 
-export const tutorController = { createTutorProfile };
+export const tutorController = { createTutorProfile,createTutorSlots };
