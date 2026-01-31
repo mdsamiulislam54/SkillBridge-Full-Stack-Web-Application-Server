@@ -1,13 +1,13 @@
 import express, { Application } from "express";
 import dotenv from 'dotenv'
 import { config } from './config/config'
-
 import cors from 'cors'
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "../lib/auth";
 import AuthVerify, { userRole } from "./middleware/authVerify";
-import { errorHander } from "./middleware/errorHanding";
 import { tutorRoute } from "./modules/tutors/tutor.route";
+import { errorHandler } from "./middleware/errorHanding";
+import { adminRoute } from "./modules/admin/admin.route";
 
 
 dotenv.config();
@@ -26,9 +26,10 @@ app.get('/health', AuthVerify(userRole.STUDENT, userRole.ADMIN, userRole.TUTOR),
     res.status(200).send('OK');
 });
 app.use('/api/tutor', tutorRoute);
+app.use('/api/admin', adminRoute);
 app.all('/api/auth/*splat', toNodeHandler(auth));
 
-app.use(errorHander)
+app.use(errorHandler)
 
 
 export default app;

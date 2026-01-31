@@ -31,7 +31,7 @@ const getTutorProfilesByUser = async (req: Request, res: Response, next: NextFun
     try {
         const userId = req.user?.id
         const tutor = await tutorService.getTutorProfilesByUser(userId);
-        console.log(userId)
+        console.log(tutor)
         res.status(200).json({
             message: 'Tutor profile get successfully',
             data: tutor

@@ -1,67 +1,55 @@
-
-import { NextFunction, Request, Response } from "express";
-import { Error } from "mongoose";
-
+import { Request, Response, NextFunction } from "express";
 import { Prisma } from "../../generated/prisma/client";
-export function errorHander(err: Error, req: Request, res: Response, next: NextFunction) {
-    let statusCode = 500;
-    let errorMessage = 'Internal Server Error';
-    const message = err.message || 'Internal Server Error';
 
-     if (err instanceof Prisma.PrismaClientValidationError) {
+export const errorHandler = (
+    err: any,
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    let statusCode = 500;
+    let message = "Internal Server Error";
+
+    if (err instanceof Prisma.PrismaClientValidationError) {
         statusCode = 400;
-        errorMessage = "Invalid or missing request fields.";
+        message = "Invalid or missing request fields.";
     }
 
-    else if (err.name === 'CastError') {
-        statusCode = 400;
-        errorMessage = 'Invalid ID Format';
-    } else if (err instanceof SyntaxError) {
-        statusCode = 400;
-        errorMessage = 'Bad Request';
-    } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    else if (err instanceof Prisma.PrismaClientKnownRequestError) {
         switch (err.code) {
             case "P2002":
                 statusCode = 409;
-                errorMessage =
-                    "This data already exists. Please use a different value.";
+                message = "This data/user already exists.";
                 break;
 
             case "P2025":
-                statusCode = 400;
-                errorMessage = "The requested record was not found.";
+                statusCode = 404;
+                message = "Record not found.";
                 break;
 
             case "P2003":
                 statusCode = 400;
-                errorMessage =
-                    "Operation failed due to a related record constraint.";
+                message = "Invalid relation. Related record not found.";
                 break;
 
             default:
                 statusCode = 400;
-                errorMessage = "The request could not be completed.";
+                message = "Database error.";
         }
-    } else if (err instanceof Prisma.PrismaClientInitializationError) {
-        statusCode = 503;
-        errorMessage = "Service Unavailable";
-
-    } else if (err instanceof Prisma.PrismaClientRustPanicError) {
-        statusCode = 503;
-        errorMessage = "server restart needed";
     }
-    res.status(statusCode).json({
-        success: false,
-        message: message
-    });
 
-    if (res.headersSent) {
-        return next(err.message);
+    else if (err instanceof SyntaxError) {
+        statusCode = 400;
+        message = "Invalid JSON format.";
+    }
+
+    else if (err instanceof Error) {
+        statusCode = 400;
+        message = err.message;
     }
 
     return res.status(statusCode).json({
-        statusCode,
-        message: errorMessage,
-        errorDetails: err
+        success: false,
+        message,
     });
-}
+};
