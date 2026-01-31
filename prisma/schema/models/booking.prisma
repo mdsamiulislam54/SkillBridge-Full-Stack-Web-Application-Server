@@ -1,19 +1,21 @@
 model Booking {
   id             String        @id @default(uuid())
   userId         String
-  user           User          @relation(fields: [userId], references: [id])
   tutorProfileId String
-  tutorProfile   TutorProfile  @relation("TutorBookings", fields: [tutorProfileId], references: [id])
   categoryId     String
-  category       Categories    @relation(fields: [categoryId], references: [id])
-  sessionDate    String?
-  startDate      String
-  bookingStatus  BookingStatus
-  note           String?
-  paymentStatus  PaymentStatus
+  tutorSlotsId   String
+  bookingStatus  BookingStatus @default(PENDING)
+  totalPrice     Int
+  paymentStatus  PaymentStatus @default(UNPAID)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  reviews        Review[]      @relation("BookingToReview")
 
-  @@index([id, userId, tutorProfileId, categoryId])
+  // Relations
+  user         User         @relation(fields: [userId], references: [id])
+  tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id])
+  category     Category     @relation(fields: [categoryId], references: [id])
+  tutorSlot    TutorSlot    @relation(fields: [tutorSlotsId], references: [id])
+  review       Review?
+
+  @@map("booking")
 }

@@ -9,6 +9,8 @@ tutorRouter.get('/', (req, res) => {
 
 tutorRouter.post('/create', AuthVerify(userRole.ADMIN, userRole.TUTOR, userRole.STUDENT), tutorController.createTutorProfile);
 tutorRouter.post('/create/slots', AuthVerify(userRole.ADMIN, userRole.TUTOR, userRole.STUDENT), tutorController.createTutorSlots);
+tutorRouter.get('/get-profile', AuthVerify(userRole.TUTOR), tutorController.getTutorProfilesByUser);
+tutorRouter.get('/get-profile/all', tutorController.getTutorProfiles);
 
 
 export const tutorRoute = tutorRouter;

@@ -1,13 +1,20 @@
 model TutorSlot {
-    id          String       @id @default(uuid())
-    tutorId     String
-    tutor       TutorProfile @relation("tutorSlots", fields: [tutorId], references: [id])
-    duration    String
-    startTime   String
-    teachingMode String
-    endTime     String
-    maxStudents String
-    isActive    Boolean      @default(false)
-    createdAt   DateTime     @default(now())
-    updatedAt   DateTime     @updatedAt
+  id           String   @id @default(uuid())
+  tutorId      String
+  startTime    String
+  endTime      String
+  duration     String
+  teachingMode String
+  maxStudent   Int
+  hourlyRate   Int
+  category     String[]
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  tutorProfile TutorProfile @relation(fields: [tutorId], references: [id])
+  bookings     Booking[]
+
+  @@map("tutorSlots")
 }

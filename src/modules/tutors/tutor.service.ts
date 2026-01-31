@@ -10,17 +10,46 @@ const createTutorProfile = async (tutorData: ITutorProfile) => {
 }
 
 const createTutorSlots = async (slotsData: SlotsType) => {
-    const tutorProfile = await prisma.tutorProfile.findFirstOrThrow({
-        where:{userId: slotsData.tutorId}
+    // const tutorProfile = await prisma.tutorProfile.findFirstOrThrow({
+    //     where: {
+    //         userId: slotsData.userId,
+    //         id: slotsData.tutorId
+    //     }
+    // })
+    // if (!tutorProfile) throw new Error("Tutor profile not found.");
+
+    // return await prisma.tutorSlot.create({
+    //     data: {
+
+    //         startTime: slotsData.startTime,
+    //         endTime: slotsData.endTime,
+    //         duration: slotsData.duration,
+    //         teachingMode: slotsData.teachingMode,
+        
+    //         isActive: slotsData.isActive,
+    //         tutorId: slotsData.tutorId,
+    //     }
+    // })
+}
+
+
+const getTutorProfilesByUser = async (userId: string) => {
+    return await prisma.tutorProfile.findMany({
+        where: {
+            userId: userId
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
     })
-    if (!tutorProfile) throw new Error("Tutor profile not found.");
-    const slots =  await prisma.tutorSlot.create({
-        data: {
-            ...slotsData,
-            tutorId: tutorProfile.id
+}
+const getTutorProfiles = async () => {
+    return await prisma.tutorProfile.findMany({
+        orderBy: {
+            createdAt: "desc"
         }
     })
 }
 
 
-export const tutorService = { createTutorProfile, createTutorSlots };
+export const tutorService = { createTutorProfile, createTutorSlots, getTutorProfilesByUser,getTutorProfiles };

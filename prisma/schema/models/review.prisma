@@ -1,16 +1,15 @@
 model Review {
-  id             String       @id @default(uuid())
+  id             String   @id @default(uuid())
   userId         String
-  user           User         @relation("UserToReview", fields: [userId], references: [id])
   tutorProfileId String
-  tutorProfile   TutorProfile @relation("TutorToReview", fields: [tutorProfileId], references: [id])
-  bookingId      String
-  booking        Booking      @relation("BookingToReview", fields: [bookingId], references: [id])
+  bookingId      String   @unique
   comment        String
-  rating         Int?         @default(0)
+  rating         Int
+  createdAt      DateTime @default(now())
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  // Relations
+  tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id])
+  booking      Booking      @relation(fields: [bookingId], references: [id])
 
-  @@index([id, userId, tutorProfileId, bookingId])
+  @@map("review")
 }

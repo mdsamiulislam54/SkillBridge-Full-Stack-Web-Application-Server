@@ -1,27 +1,24 @@
 model TutorProfile {
   id              String         @id @default(uuid())
-  userId          String
-  user            User           @relation(fields: [userId], references: [id])
+  userId          String         @unique
   name            String
   bio             String
   education       String
   experienceYears String
-  hourlyRate      Int
   teachingMode    String
   isAvailable     Boolean        @default(true)
   approvalStatus  ApprovalStatus @default(PENDING)
-  categories      String[]
-  sessionDuration Int?
-  averageRating   Float?         @default(0)
+  averageRating   Float?         @default(0.0)
   profileImage    String?
-  coverImage      String?
-  languages       String[]
+  languages       String[] // Postgres array
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
-  bookings        Booking[]      @relation("TutorBookings")
-  reviews         Review[]       @relation("TutorToReview")
-  tutorSlots      TutorSlot[]    @relation("tutorSlots")
 
-  @@index([id, userId])
-  @@map("tutors")
+  // Relations
+  user       User        @relation(fields: [userId], references: [id])
+  tutorSlots TutorSlot[]
+  bookings   Booking[]
+  reviews    Review[]
+
+  @@map("tutorProfile")
 }

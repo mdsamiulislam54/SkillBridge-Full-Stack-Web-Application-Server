@@ -6,4 +6,5 @@ export type SlotsType = {
   maxStudents: string
   isActive: boolean
   tutorId: string 
+  userId: string
 }
