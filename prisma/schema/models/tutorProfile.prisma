@@ -1,6 +1,6 @@
 model TutorProfile {
   id              String         @id @default(uuid())
-  userId          String         
+  userId          String         @unique
   name            String
   bio             String
   education       String

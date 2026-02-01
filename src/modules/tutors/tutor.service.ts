@@ -9,31 +9,31 @@ const createTutorProfile = async (tutorData: ITutorProfile) => {
     });
 }
 
-const createTutorSlots = async (slotsData: SlotsType) => {
-    // const tutorProfile = await prisma.tutorProfile.findFirstOrThrow({
-    //     where: {
-    //         userId: slotsData.userId,
-    //         id: slotsData.tutorId
-    //     }
-    // })
-    // if (!tutorProfile) throw new Error("Tutor profile not found.");
+const createTutorSlots = async (slotsData: SlotsType, tutorId: string) => {
+    const tutor = await prisma.tutorProfile.findUniqueOrThrow({
+        where: { userId: tutorId }
 
-    // return await prisma.tutorSlot.create({
-    //     data: {
+    })
+    console.log(tutor, "Tutor")
 
-    //         startTime: slotsData.startTime,
-    //         endTime: slotsData.endTime,
-    //         duration: slotsData.duration,
-    //         teachingMode: slotsData.teachingMode,
-        
-    //         isActive: slotsData.isActive,
-    //         tutorId: slotsData.tutorId,
-    //     }
-    // })
+
+    return await prisma.tutorSlot.create({
+        data: {
+            startTime: slotsData.startTime,
+            endTime: slotsData.endTime,
+            duration: slotsData.duration,
+            teachingMode: slotsData.teachingMode,
+            category: slotsData.categories,
+            hourlyRate: Number(slotsData.hourlyRate),
+            maxStudent: Number(slotsData.maxStudents),
+            isActive: slotsData.isActive,
+            tutorId: tutor.id
+        }
+    })
 }
 
 
-const getTutorProfilesByUser = async (userId: string) => {
+const getTutorProfilesById = async (userId: string) => {
     return await prisma.tutorProfile.findMany({
         where: {
             userId: userId
@@ -41,6 +41,32 @@ const getTutorProfilesByUser = async (userId: string) => {
         orderBy: {
             createdAt: "desc"
         }
+    })
+}
+const getTutorSlot = async (userId: string) => {
+    return await prisma.tutorSlot.findMany({
+        where: {
+            tutorProfile: {
+                userId: userId
+            },
+
+        },
+        orderBy: {
+            createdAt: "desc"
+        },
+
+        include: {
+
+            tutorProfile: {
+                select: {
+                    name: true,
+
+                }
+            }
+
+        }
+
+
     })
 }
 const getTutorProfiles = async () => {
@@ -51,5 +77,83 @@ const getTutorProfiles = async () => {
     })
 }
 
+const tutorDashboardCardData = async (tutorId: string) => {
+    const [totalSlot, totalEarning, averageRating, totalBooking] = await Promise.all([
+        prisma.tutorSlot.count({
+            where: {
+                tutorProfile: {
+                    userId: tutorId
+                }
+            }
+        }),
+        prisma.booking.aggregate({
+            where: { bookingStatus: "CONFIRMED", userId: tutorId },
+            _sum: { totalPrice: true }
+        }),
+        prisma.tutorProfile.aggregate({
+            where: { userId: tutorId },
+            _avg: { averageRating: true }
+        }),
+        prisma.booking.count(),
+    ])
 
-export const tutorService = { createTutorProfile, createTutorSlots, getTutorProfilesByUser,getTutorProfiles };
+    return {
+        totalSlot,
+        totalBooking,
+        totalEarning: totalEarning._sum.totalPrice ?? 0,
+        averageRating: averageRating._avg.averageRating ?? 0
+    }
+}
+
+const getSlotChartData = async (tutorId: string) => {
+    const result = await prisma.tutorSlot.groupBy({
+        by: ['createdAt'],
+        where: {
+            tutorProfile: {
+                userId: tutorId
+            }
+        },
+        _count: {
+            id: true,
+        },
+        orderBy: {
+            createdAt: 'asc',
+        },
+    })
+
+    console.log(result)
+
+    const data = result.map(item => ({
+        date: item.createdAt.toISOString().split("T")[0],
+        total: item._count.id,
+    }));
+
+    return data
+
+}
+
+const tutorSlotsUpdateById = async (id: string, data: SlotsType) => {
+    return prisma.tutorSlot.updateMany({
+        where: { id },
+        data
+    })
+}
+const tutorSlotsDeleteById = async (id: string) => {
+    return prisma.tutorSlot.delete({
+        where: { id },
+
+    })
+}
+
+
+export const tutorService = {
+    createTutorProfile,
+    createTutorSlots,
+    getTutorProfiles,
+    getTutorProfilesById,
+    getTutorSlot,
+    tutorDashboardCardData,
+    getSlotChartData,
+    tutorSlotsUpdateById,
+    tutorSlotsDeleteById
+};

@@ -3,8 +3,10 @@ export type SlotsType = {
   endTime:string
   duration: string   
   teachingMode: string
-  maxStudents: string
+  maxStudents: number
   isActive: boolean
   tutorId: string 
-  userId: string
+  userId: string 
+  categories: string
+  hourlyRate: number
 }
