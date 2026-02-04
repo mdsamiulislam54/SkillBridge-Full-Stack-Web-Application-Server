@@ -37,7 +37,7 @@ function AuthVerify(...role: userRole[]) {
                 email: session.user.email,
                 emailVerified: session.user.emailVerified
             }
-            console.log("Authenticated User:", req.user);
+            
             next()
         } catch (error) {
             next(error)

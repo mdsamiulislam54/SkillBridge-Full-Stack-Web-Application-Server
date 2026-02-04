@@ -13,7 +13,7 @@ model TutorSlot {
   updatedAt    DateTime @updatedAt
 
   // Relations
-  tutorProfile TutorProfile @relation(fields: [tutorId], references: [id])
+  tutorProfile TutorProfile @relation(fields: [tutorId], references: [id], onDelete: Cascade)
   bookings     Booking[]
 
   @@map("tutorSlots")

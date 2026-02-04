@@ -3,7 +3,7 @@ import { tutorService } from "./tutor.service";
 
 const createTutorProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log(req.body)
+
         const tutor = await tutorService.createTutorProfile(req.body);
         res.status(201).json({
             message: 'Tutor profile created successfully',
@@ -16,13 +16,13 @@ const createTutorProfile = async (req: Request, res: Response, next: NextFunctio
 }
 const createTutorSlots = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log(req.body)
+
         const tutorId = req.user?.id as string;
-        console.log(tutorId)
+    
         const tutor = await tutorService.createTutorSlots(req.body, tutorId);
         res.status(201).json({
             message: 'Tutor profile created successfully',
-            data: null
+            data: tutor
         })
     } catch (error) {
         console.error('Error creating tutor profile:', error);
@@ -33,7 +33,7 @@ const getTutorProfilesById = async (req: Request, res: Response, next: NextFunct
     try {
         const userId = req.user?.id
         const tutor = await tutorService.getTutorProfilesById(userId);
-        console.log(tutor)
+
         res.status(200).json({
             message: 'Tutor profile get successfully',
             data: tutor
@@ -60,7 +60,7 @@ const getTutorProfiles = async (req: Request, res: Response, next: NextFunction)
 const getTutorSlot = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.user?.id as string
-        console.log(userId)
+
         const tutor = await tutorService.getTutorSlot(userId);
 
         res.status(200).json({
@@ -103,13 +103,28 @@ const getSlotChartData = async (req: Request, res: Response, next: NextFunction)
 
 const tutorSlotsUpdateById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.params.id as string;
-        const data = req.body;
-        console.log({userId, data})
-        // const tutor = await tutorService.tutorSlotsUpdateById(userId, data);
+        const id = req.params.slotId as string;
+        if (!id) return res.status(400).json({ message: "Slot ID required" });
+
+        const tutor = await tutorService.tutorSlotsUpdateById(id, req.body);
+
         res.status(200).json({
             message: 'Tutor Slots Update successfully',
-            data: null
+            data: tutor
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+const tutorProfileUpdateById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = req.params.profileId as string;
+        if (!id) return res.status(400).json({ message: "Slot ID required" });
+       
+        const tutor = await tutorService.tutorProfileUpdateById(id, req.body);
+        res.status(200).json({
+            message: 'Tutor Profile Update successfully',
+            data: tutor
         })
     } catch (error) {
         next(error)
@@ -118,10 +133,26 @@ const tutorSlotsUpdateById = async (req: Request, res: Response, next: NextFunct
 const tutorSlotsDeleteById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
+        if (!id) return res.status(400).json({ message: "Slot ID required" });
+
         const tutor = await tutorService.tutorSlotsDeleteById(id);
         res.status(200).json({
             message: 'Tutor Slots Delete successfully',
             data: null
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+const tutorProfileDeleteById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = req.params.id as string;
+        if (!id) throw Error("Slot ID required")
+        console.log(id)
+        const tutor = await tutorService.tutorProfileDeleteById(id);
+        res.status(200).json({
+            message: 'Tutor Profile Delete successfully',
+            data: tutor
         })
     } catch (error) {
         next(error)
@@ -142,5 +173,7 @@ export const tutorController = {
     tutorDashboardCardData,
     getSlotChartData,
     tutorSlotsUpdateById,
-    tutorSlotsDeleteById
+    tutorSlotsDeleteById,
+    tutorProfileUpdateById,
+    tutorProfileDeleteById
 };

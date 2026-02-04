@@ -1,3 +1,4 @@
+import { TutorProfile } from "../../../generated/prisma/client";
 import { prisma } from "../../../lib/prisma";
 import { ITutorProfile } from "../../type/tutorProfileType";
 import { SlotsType } from "../../type/tutorSlots.type";
@@ -11,23 +12,21 @@ const createTutorProfile = async (tutorData: ITutorProfile) => {
 
 const createTutorSlots = async (slotsData: SlotsType, tutorId: string) => {
     const tutor = await prisma.tutorProfile.findUniqueOrThrow({
-        where: { userId: tutorId }
+        where: { userId: slotsData.id }
 
     })
-    console.log(tutor, "Tutor")
-
-
+   
     return await prisma.tutorSlot.create({
         data: {
             startTime: slotsData.startTime,
             endTime: slotsData.endTime,
             duration: slotsData.duration,
             teachingMode: slotsData.teachingMode,
-            category: slotsData.categories,
-            hourlyRate: Number(slotsData.hourlyRate),
-            maxStudent: Number(slotsData.maxStudents),
+            category: slotsData.category,
+            hourlyRate: Number(slotsData.hourlyRate) || 0,
+            maxStudent: Number(slotsData.maxStudents) || 0,
             isActive: slotsData.isActive,
-            tutorId: tutor.id
+            tutorId:tutor.id
         }
     })
 }
@@ -132,15 +131,41 @@ const getSlotChartData = async (tutorId: string) => {
 
 }
 
-const tutorSlotsUpdateById = async (id: string, data: SlotsType) => {
-    return prisma.tutorSlot.updateMany({
+const tutorSlotsUpdateById = async (tutorId: string, data: Partial<SlotsType>) => {
+
+    const slot = await prisma.tutorSlot.findUniqueOrThrow({ where: { id: tutorId } })
+
+    const update = await prisma.tutorSlot.update({
+        where: { id: tutorId },
+        data
+    })
+
+    return update
+}
+const tutorProfileUpdateById = async (id: string, data: Partial<TutorProfile>) => {
+    const update = await prisma.tutorProfile.update({
         where: { id },
         data
     })
+
+    return update
 }
 const tutorSlotsDeleteById = async (id: string) => {
-    return prisma.tutorSlot.delete({
+    return await prisma.tutorSlot.delete({
         where: { id },
+
+    })
+}
+const tutorProfileDeleteById = async (id: string) => {
+
+    const tutor = await prisma.tutorProfile.findUniqueOrThrow({
+        where: { id: id }
+    });
+
+
+    console.log(tutor)
+    return await prisma.tutorProfile.delete({
+        where: { id: tutor.id },
 
     })
 }
@@ -155,5 +180,7 @@ export const tutorService = {
     tutorDashboardCardData,
     getSlotChartData,
     tutorSlotsUpdateById,
-    tutorSlotsDeleteById
+    tutorSlotsDeleteById,
+    tutorProfileUpdateById,
+    tutorProfileDeleteById
 };

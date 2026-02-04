@@ -15,7 +15,7 @@ model TutorProfile {
   updatedAt       DateTime       @updatedAt
 
   // Relations
-  user       User        @relation(fields: [userId], references: [id])
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   tutorSlots TutorSlot[]
   bookings   Booking[]
   reviews    Review[]

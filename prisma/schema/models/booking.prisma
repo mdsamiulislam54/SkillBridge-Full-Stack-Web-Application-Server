@@ -11,10 +11,10 @@ model Booking {
   updatedAt      DateTime      @updatedAt
 
   // Relations
-  user         User         @relation(fields: [userId], references: [id])
-  tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id])
-  category     Category     @relation(fields: [categoryId], references: [id])
-  tutorSlot    TutorSlot    @relation(fields: [tutorSlotsId], references: [id])
+  user         User         @relation(fields: [userId], references: [id],onDelete: Cascade)
+  tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id],onDelete: Cascade)
+  category     Category     @relation(fields: [categoryId], references: [id],onDelete: Cascade)
+  tutorSlot    TutorSlot    @relation(fields: [tutorSlotsId], references: [id],onDelete: Cascade)
   review       Review?
 
   @@map("booking")

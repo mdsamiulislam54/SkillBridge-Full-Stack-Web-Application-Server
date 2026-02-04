@@ -16,10 +16,13 @@ tutorRouter.post('/create', AuthVerify(userRole.ADMIN, userRole.TUTOR, userRole.
 tutorRouter.post('/create/slots', AuthVerify(userRole.ADMIN, userRole.TUTOR, ), tutorController.createTutorSlots);
 
 
-tutorRouter.patch('/slots/:id', AuthVerify(userRole.ADMIN, userRole.TUTOR, ), tutorController.tutorSlotsUpdateById);
+tutorRouter.patch('/slots/update/:slotId', AuthVerify(userRole.ADMIN, userRole.TUTOR ), tutorController.tutorSlotsUpdateById);
+
+tutorRouter.patch('/profile/update/:profileId', AuthVerify(userRole.ADMIN, userRole.TUTOR ), tutorController.tutorProfileUpdateById);
 
 
-tutorRouter.delete('/slots/:id', AuthVerify( userRole.ADMIN, userRole.TUTOR, ), tutorController.tutorSlotsDeleteById);
+tutorRouter.delete('/slots/:id', AuthVerify( userRole.ADMIN, userRole.TUTOR ), tutorController.tutorSlotsDeleteById);
+tutorRouter.delete('/profile/:id', AuthVerify( userRole.ADMIN, userRole.TUTOR ), tutorController.tutorProfileDeleteById);
 
 
 
