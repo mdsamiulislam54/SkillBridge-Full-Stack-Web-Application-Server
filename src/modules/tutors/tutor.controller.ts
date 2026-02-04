@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { tutorService } from "./tutor.service";
+import { PaginationOptions } from "../../helper/pagination.helper";
 
 const createTutorProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -18,7 +19,7 @@ const createTutorSlots = async (req: Request, res: Response, next: NextFunction)
     try {
 
         const tutorId = req.user?.id as string;
-    
+
         const tutor = await tutorService.createTutorSlots(req.body, tutorId);
         res.status(201).json({
             message: 'Tutor profile created successfully',
@@ -120,7 +121,7 @@ const tutorProfileUpdateById = async (req: Request, res: Response, next: NextFun
     try {
         const id = req.params.profileId as string;
         if (!id) return res.status(400).json({ message: "Slot ID required" });
-       
+
         const tutor = await tutorService.tutorProfileUpdateById(id, req.body);
         res.status(200).json({
             message: 'Tutor Profile Update successfully',
@@ -158,6 +159,38 @@ const tutorProfileDeleteById = async (req: Request, res: Response, next: NextFun
         next(error)
     }
 }
+const getAllTutorProfile = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { skip, limit, search ,page} = PaginationOptions(req.query);
+        const payload = {
+            skip,
+            limit,
+            search,
+            page
+        }
+
+    
+        const tutorProfile = await tutorService.getAllTutorProfile(payload);
+        res.status(200).json({
+            message: 'Tutor Profile Get successfully',
+            data: tutorProfile
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+const GetSingleTutorProfileById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = req.params.id as string
+        const tutorProfile = await tutorService.GetSingleTutorProfileById(id);
+        res.status(200).json({
+            message: 'Tutor Profile Get successfully',
+            data: tutorProfile
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 
@@ -175,5 +208,7 @@ export const tutorController = {
     tutorSlotsUpdateById,
     tutorSlotsDeleteById,
     tutorProfileUpdateById,
-    tutorProfileDeleteById
+    tutorProfileDeleteById,
+    getAllTutorProfile,
+    GetSingleTutorProfileById
 };

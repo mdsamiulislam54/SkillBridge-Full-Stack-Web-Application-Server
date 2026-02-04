@@ -2,7 +2,7 @@ model Booking {
   id             String        @id @default(uuid())
   userId         String
   tutorProfileId String
-  categoryId     String
+  categoryId     String?
   tutorSlotsId   String
   bookingStatus  BookingStatus @default(PENDING)
   totalPrice     Int
@@ -13,7 +13,7 @@ model Booking {
   // Relations
   user         User         @relation(fields: [userId], references: [id],onDelete: Cascade)
   tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id],onDelete: Cascade)
-  category     Category     @relation(fields: [categoryId], references: [id],onDelete: Cascade)
+  category     Category?     @relation(fields: [categoryId], references: [id],onDelete: Cascade)
   tutorSlot    TutorSlot    @relation(fields: [tutorSlotsId], references: [id],onDelete: Cascade)
   review       Review?
 

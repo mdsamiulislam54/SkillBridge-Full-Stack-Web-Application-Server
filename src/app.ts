@@ -8,6 +8,8 @@ import AuthVerify, { userRole } from "./middleware/authVerify";
 import { tutorRoute } from "./modules/tutors/tutor.route";
 import { errorHandler } from "./middleware/errorHanding";
 import { adminRoute } from "./modules/admin/admin.route";
+import { studentRoute } from "./modules/student/student.route";
+import { BookingRouter } from "./modules/booking/booking.route";
 
 
 dotenv.config();
@@ -27,6 +29,8 @@ app.get('/health', AuthVerify(userRole.STUDENT, userRole.ADMIN, userRole.TUTOR),
 });
 app.use('/api/tutor', tutorRoute);
 app.use('/api/admin', adminRoute);
+app.use('/api/student', studentRoute);
+app.use('/api/booking', BookingRouter);
 app.all('/api/auth/*splat', toNodeHandler(auth));
 
 app.use(errorHandler)

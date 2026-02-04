@@ -1,4 +1,5 @@
 import { TutorProfile } from "../../../generated/prisma/client";
+import { TutorProfileWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../../lib/prisma";
 import { ITutorProfile } from "../../type/tutorProfileType";
 import { SlotsType } from "../../type/tutorSlots.type";
@@ -15,7 +16,7 @@ const createTutorSlots = async (slotsData: SlotsType, tutorId: string) => {
         where: { userId: slotsData.id }
 
     })
-   
+
     return await prisma.tutorSlot.create({
         data: {
             startTime: slotsData.startTime,
@@ -26,7 +27,7 @@ const createTutorSlots = async (slotsData: SlotsType, tutorId: string) => {
             hourlyRate: Number(slotsData.hourlyRate) || 0,
             maxStudent: Number(slotsData.maxStudents) || 0,
             isActive: slotsData.isActive,
-            tutorId:tutor.id
+            tutorId: tutor.id
         }
     })
 }
@@ -170,6 +171,99 @@ const tutorProfileDeleteById = async (id: string) => {
     })
 }
 
+const getAllTutorProfile = async (payload: { limit: number, skip: number, search: string, page: number }) => {
+
+    let whereConditions: TutorProfileWhereInput[] = [];
+
+    if (payload.search) {
+        whereConditions.push({
+            OR: [
+                {
+                    name: {
+                        contains: payload.search as string,
+                        mode: "insensitive"
+                    },
+
+
+                },
+
+                {
+                    education: {
+                        contains: payload.search as string,
+                        mode: "insensitive"
+                    }
+                },
+
+                {
+                    bio: {
+                        contains: payload.search as string,
+                        mode: "insensitive"
+                    }
+                },
+                {
+                    tutorSlots: {
+                        every: {
+                            category: {
+                                contains: payload.search as string,
+                                mode: "insensitive"
+                            }
+                        }
+                    }
+                },
+
+            ]
+        })
+    }
+
+
+
+    const result = await prisma.tutorProfile.findMany({
+        take: payload.limit,
+        skip: payload.skip,
+        where: {
+            AND: whereConditions
+        },
+        include: {
+            tutorSlots: {
+                include: {
+                    tutorProfile: {
+                        select: { id: true }
+                    }
+                }
+            },
+
+            reviews: true,
+
+        },
+        orderBy: { averageRating: "asc" }
+    });
+
+    const total = await prisma.tutorProfile.count({ where: { AND: whereConditions } });
+    return {
+        result,
+        pagination: {
+            total,
+            page: payload.page,
+            limit: payload.limit,
+            totalPage: Math.floor(total / payload.limit)
+
+        }
+    }
+}
+
+const GetSingleTutorProfileById = async (id: string) => {
+
+    return await prisma.tutorProfile.findFirst({
+        where: { id },
+        include: {
+            reviews: true,
+            tutorSlots: true,
+
+        }
+    })
+}
+
+
 
 export const tutorService = {
     createTutorProfile,
@@ -182,5 +276,7 @@ export const tutorService = {
     tutorSlotsUpdateById,
     tutorSlotsDeleteById,
     tutorProfileUpdateById,
-    tutorProfileDeleteById
+    tutorProfileDeleteById,
+    getAllTutorProfile,
+    GetSingleTutorProfileById
 };
