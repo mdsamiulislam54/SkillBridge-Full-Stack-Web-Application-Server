@@ -1,12 +1,14 @@
 import { NextFunction, Request, Response } from "express";
+import { studentService } from "./student.service";
 
 
-const getAll = async (req: Request, res: Response, next: NextFunction) => {
+const getBookingByOwnUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-
+        const userId = req.user?.id as string
+        const booking = await studentService.getBookingByOwnUser(userId)
         res.status(201).json({
-            message: 'Tutor profile created successfully',
-            data: null
+            message: 'Get booking successfully',
+            data: booking
         })
     } catch (error) {
         console.error('Error creating tutor profile:', error);
@@ -15,4 +17,6 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 
-export const studentController = {}
+export const studentController = {
+    getBookingByOwnUser
+}

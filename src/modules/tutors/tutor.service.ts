@@ -121,7 +121,7 @@ const getSlotChartData = async (tutorId: string) => {
         },
     })
 
-    console.log(result)
+
 
     const data = result.map(item => ({
         date: item.createdAt.toISOString().split("T")[0],
