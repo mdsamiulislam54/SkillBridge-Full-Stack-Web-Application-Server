@@ -10,6 +10,7 @@ adminRouter.get('/', (req, res) => {
 adminRouter.get('/category', adminController.getCategory)
 adminRouter.get('/dashboard', AuthVerify(userRole.ADMIN), adminController.getAdminDashboardCard)
 adminRouter.get('/dashboard/chart', AuthVerify(userRole.ADMIN), adminController.adminChartData)
+adminRouter.get('/all-user', AuthVerify(userRole.ADMIN), adminController.getAllUser)
 
 adminRouter.post('/category', AuthVerify(userRole.ADMIN), adminController.createCategory)
 

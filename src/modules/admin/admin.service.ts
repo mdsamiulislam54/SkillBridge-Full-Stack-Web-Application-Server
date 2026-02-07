@@ -1,7 +1,9 @@
-import { date } from "better-auth"
+import { date, number, string } from "better-auth"
 import { prisma } from "../../../lib/prisma"
 import { userRole } from "../../middleware/authVerify"
 import { Category } from "../../type/category.type"
+import { PaginationOptionsType } from "../../helper/pagination.helper"
+import { UserWhereInput, UserWhereUniqueInput } from "../../../generated/prisma/models"
 
 const createCategory = async (category: Category) => {
     return await prisma.category.create({ data: category })
@@ -55,7 +57,7 @@ const adminChartData = async () => {
 
     const chartData = result.map((item) => {
         return ({
-            date:item.createdAt.toLocaleDateString(),
+            date: item.createdAt.toLocaleDateString(),
             price: item._sum.totalPrice
         })
     })
@@ -63,9 +65,80 @@ const adminChartData = async () => {
     return chartData
 }
 
+const getAllUser = async ({ page, limit, skip, search, sort }: { page: number, limit: number, skip: number, search: string, sort: string }) => {
+    const whereConditions: UserWhereInput[] = []
+
+    if (search) {
+        whereConditions.push({
+            OR: [
+                {
+                    name: {
+                        contains: search,
+                        mode: "insensitive",
+                    }
+                },
+            
+                {
+                    email: search,
+                    
+                },
+                ...(search.length>10?[
+                    {
+                        id:search
+                    }
+                ]:[])
+            ]
+        })
+    }
+
+    if (sort) {
+        if (["STUDENT", "TUTOR", "ADMIN"].includes(sort)) {
+            whereConditions.push({
+                role: sort
+            })
+        }
+
+        if (["ACTIVE", "BAN"].includes(sort)) {
+            whereConditions.push({
+                status: sort as any,
+            })
+        }
+        if(sort === 'all'){
+           
+        }
+    }
+
+
+    const result = await prisma.user.findMany({
+        take: limit,
+        skip,
+        where: {
+            AND: whereConditions
+        },
+
+        orderBy: { createdAt: "asc" }
+
+    })
+
+    const total = await prisma.user.count({ where: { AND: whereConditions } });
+
+    return {
+        result,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPage: Math.ceil(total / limit)
+
+        }
+    }
+
+}
+
 export const adminService = {
     createCategory,
     getCategory,
     getAdminDashboardCard,
-    adminChartData
+    adminChartData,
+    getAllUser
 }

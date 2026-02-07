@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { adminService } from "./admin.service";
+import { PaginationOptions } from "../../helper/pagination.helper";
 
 const createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -44,6 +45,20 @@ const getAdminDashboardCard = async (req: Request, res: Response, next: NextFunc
         next(error)
     }
 }
+const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { page, limit, skip, search, sort } = PaginationOptions(req.query)
+        const data = await adminService.getAllUser({page, limit, skip, search, sort})
+
+        res.status(200).json({
+            message: 'successful',
+            data
+        })
+    } catch (error) {
+        console.error('Error :', error);
+        next(error)
+    }
+}
 const adminChartData = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -59,4 +74,4 @@ const adminChartData = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
-export const adminController = { createCategory, getCategory, getAdminDashboardCard,adminChartData}
+export const adminController = { createCategory, getCategory, getAdminDashboardCard, adminChartData, getAllUser }

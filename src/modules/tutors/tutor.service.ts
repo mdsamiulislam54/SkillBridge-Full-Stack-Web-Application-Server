@@ -251,7 +251,7 @@ const getAllTutorProfile = async (payload: { limit: number, skip: number, search
             total,
             page: payload.page,
             limit: payload.limit,
-            totalPage: Math.floor(total / payload.limit)
+            totalPage: Math.ceil(total / payload.limit)
 
         }
     }
