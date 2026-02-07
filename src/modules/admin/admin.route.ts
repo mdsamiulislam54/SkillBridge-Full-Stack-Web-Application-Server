@@ -11,6 +11,7 @@ adminRouter.get('/category', adminController.getCategory)
 adminRouter.get('/dashboard', AuthVerify(userRole.ADMIN), adminController.getAdminDashboardCard)
 adminRouter.get('/dashboard/chart', AuthVerify(userRole.ADMIN), adminController.adminChartData)
 adminRouter.get('/all-user', AuthVerify(userRole.ADMIN), adminController.getAllUser)
+adminRouter.patch('/manage/user/:id', AuthVerify(userRole.ADMIN), adminController.updateUserStatus)
 
 adminRouter.post('/category', AuthVerify(userRole.ADMIN), adminController.createCategory)
 

@@ -4,6 +4,8 @@ import { userRole } from "../../middleware/authVerify"
 import { Category } from "../../type/category.type"
 import { PaginationOptionsType } from "../../helper/pagination.helper"
 import { UserWhereInput, UserWhereUniqueInput } from "../../../generated/prisma/models"
+import { User } from "../../../generated/prisma/client"
+import { UserStatus } from "../../type/user.status.type"
 
 const createCategory = async (category: Category) => {
     return await prisma.category.create({ data: category })
@@ -77,16 +79,16 @@ const getAllUser = async ({ page, limit, skip, search, sort }: { page: number, l
                         mode: "insensitive",
                     }
                 },
-            
+
                 {
                     email: search,
-                    
+
                 },
-                ...(search.length>10?[
+                ...(search.length > 10 ? [
                     {
-                        id:search
+                        id: search
                     }
-                ]:[])
+                ] : [])
             ]
         })
     }
@@ -103,8 +105,8 @@ const getAllUser = async ({ page, limit, skip, search, sort }: { page: number, l
                 status: sort as any,
             })
         }
-        if(sort === 'all'){
-           
+        if (sort === 'all') {
+
         }
     }
 
@@ -135,10 +137,26 @@ const getAllUser = async ({ page, limit, skip, search, sort }: { page: number, l
 
 }
 
+const updateUserStatus = async (userId: string, status: string) => {
+    if (!["ACTIVE", "BAN","UNBAN"].includes(status)) {
+        throw new Error("Invalid status")
+    }
+
+    return await prisma.user.update({
+        where: { id: userId },
+        data: {
+            status: status
+        }
+
+    })
+}
+
+
 export const adminService = {
     createCategory,
     getCategory,
     getAdminDashboardCard,
     adminChartData,
-    getAllUser
+    getAllUser,
+    updateUserStatus
 }
