@@ -8,7 +8,7 @@ tutorRouter.get('/get-profile', AuthVerify(userRole.TUTOR), tutorController.getT
 tutorRouter.get('/get-profile/all', tutorController.getTutorProfiles);
 tutorRouter.get('/slots', AuthVerify(userRole.TUTOR), tutorController.getTutorSlot);
 tutorRouter.get('/dashboard', AuthVerify(userRole.TUTOR), tutorController.tutorDashboardCardData);
-tutorRouter.get('/dashboard/chart-data', AuthVerify(userRole.TUTOR), tutorController.getSlotChartData);
+tutorRouter.get('/dashboard/chart-data', AuthVerify(userRole.TUTOR, userRole.ADMIN), tutorController.getSlotChartData);
 tutorRouter.get('/',  tutorController.getAllTutorProfile);
 tutorRouter.get('/:id',  tutorController.GetSingleTutorProfileById);
 

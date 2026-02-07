@@ -18,8 +18,8 @@ const createCategory = async (req: Request, res: Response, next: NextFunction) =
 }
 const getCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-       
-       const data = await adminService.getCategory()
+
+        const data = await adminService.getCategory()
 
         res.status(200).json({
             message: 'Get Category successfully',
@@ -30,5 +30,33 @@ const getCategory = async (req: Request, res: Response, next: NextFunction) => {
         next(error)
     }
 }
+const getAdminDashboardCard = async (req: Request, res: Response, next: NextFunction) => {
+    try {
 
-export const adminController = { createCategory ,getCategory}
+        const data = await adminService.getAdminDashboardCard()
+
+        res.status(200).json({
+            message: 'successful',
+            data
+        })
+    } catch (error) {
+        console.error('Error :', error);
+        next(error)
+    }
+}
+const adminChartData = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const data = await adminService.adminChartData()
+
+        res.status(200).json({
+            message: 'successful',
+            data
+        })
+    } catch (error) {
+        console.error('Error :', error);
+        next(error)
+    }
+}
+
+export const adminController = { createCategory, getCategory, getAdminDashboardCard,adminChartData}

@@ -4,9 +4,9 @@ model Booking {
   tutorProfileId String
   categoryId     String?
   tutorSlotsId   String
-  bookingStatus  BookingStatus @default(PENDING)
+  bookingStatus  BookingStatus @default(COMPLETED)
   totalPrice     Int
-  paymentStatus  PaymentStatus @default(UNPAID)
+  paymentStatus  PaymentStatus @default(PAID)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 

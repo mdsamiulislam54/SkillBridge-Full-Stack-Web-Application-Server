@@ -2,14 +2,14 @@ model Review {
   id             String   @id @default(uuid())
   userId         String
   tutorProfileId String
-  bookingId      String   @unique
+  bookingId      String?   @unique
   comment        String
   rating         Int
   createdAt      DateTime @default(now())
 
   // Relations
   tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id],onDelete: Cascade)
-  booking      Booking      @relation(fields: [bookingId], references: [id],onDelete: Cascade)
+  booking      Booking?      @relation(fields: [bookingId], references: [id],onDelete: Cascade)
 
   @@map("review")
 }

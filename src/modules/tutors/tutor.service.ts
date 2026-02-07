@@ -87,7 +87,7 @@ const tutorDashboardCardData = async (tutorId: string) => {
             }
         }),
         prisma.booking.aggregate({
-            where: { bookingStatus: "CONFIRMED", userId: tutorId },
+            where: { bookingStatus: "COMPLETED", tutorProfile: {userId:tutorId} },
             _sum: { totalPrice: true }
         }),
         prisma.tutorProfile.aggregate({
@@ -106,15 +106,21 @@ const tutorDashboardCardData = async (tutorId: string) => {
 }
 
 const getSlotChartData = async (tutorId: string) => {
-    const result = await prisma.tutorSlot.groupBy({
+    console.log(tutorId)
+    const booking = await prisma.booking.findMany({
+        where:{tutorProfileId:tutorId}
+    });
+
+    console.log("booking", booking)
+    const result = await prisma.booking.groupBy({
         by: ['createdAt'],
-        where: {
-            tutorProfile: {
-                userId: tutorId
-            }
+        where:{
+          tutorProfile:{
+            userId:tutorId
+          }
         },
-        _count: {
-            id: true,
+        _sum: {
+            totalPrice: true
         },
         orderBy: {
             createdAt: 'asc',
@@ -125,7 +131,7 @@ const getSlotChartData = async (tutorId: string) => {
 
     const data = result.map(item => ({
         date: item.createdAt.toISOString().split("T")[0],
-        total: item._count.id,
+        total: item._sum.totalPrice,
     }));
 
     return data
