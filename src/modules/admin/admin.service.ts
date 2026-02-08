@@ -1,11 +1,10 @@
-import { date, number, string } from "better-auth"
+
 import { prisma } from "../../../lib/prisma"
 import { userRole } from "../../middleware/authVerify"
 import { Category } from "../../type/category.type"
-import { PaginationOptionsType } from "../../helper/pagination.helper"
-import { UserWhereInput, UserWhereUniqueInput } from "../../../generated/prisma/models"
-import { User } from "../../../generated/prisma/client"
-import { UserStatus } from "../../type/user.status.type"
+
+import { UserWhereInput } from "../../../generated/prisma/models"
+
 
 const createCategory = async (category: Category) => {
     return await prisma.category.create({ data: category })
@@ -138,7 +137,7 @@ const getAllUser = async ({ page, limit, skip, search, sort }: { page: number, l
 }
 
 const updateUserStatus = async (userId: string, status: string) => {
-    if (!["ACTIVE", "BAN","UNBAN"].includes(status)) {
+    if (!["ACTIVE", "BAN", "UNBAN"].includes(status)) {
         throw new Error("Invalid status")
     }
 
@@ -151,6 +150,67 @@ const updateUserStatus = async (userId: string, status: string) => {
     })
 }
 
+const getAllBooking = async ({ page, limit, skip }: { page: number, limit: number, skip: number }) => {
+    const result = await prisma.booking.findMany({
+        take: limit,
+        skip,
+        select: {
+            bookingStatus: true,
+            paymentStatus: true,
+            totalPrice: true,
+            tutorProfile: {
+                select: {
+                    name: true,
+
+                }
+            },
+            tutorSlot: {
+                select: {
+                    duration: true,
+                    startTime: true,
+                    endTime: true,
+                    teachingMode: true
+                }
+            },
+            user: {
+                select: {
+                    email: true
+                }
+            }
+        },
+        orderBy: { createdAt: 'asc' }
+    });
+    const total = await prisma.booking.count();
+
+    return {
+        result,
+        pagination: {
+            page,
+            total,
+            limit,
+            totalPage: Math.ceil(total / limit)
+        }
+    }
+}
+
+const updateCategory = async (id: string, payload: Partial<{
+    name: string;
+    icon: string;
+    description: string;
+    isActive: boolean;
+    sortOrder: number;
+}>
+) => {
+    return await prisma.category.update({
+        where: { id },
+        data: payload,
+    });
+};
+
+const deletedCategory = async(id:string)=>{
+    return await prisma.category.delete({where:{id}})
+}
+
 
 export const adminService = {
     createCategory,
@@ -158,5 +218,9 @@ export const adminService = {
     getAdminDashboardCard,
     adminChartData,
     getAllUser,
-    updateUserStatus
+    updateUserStatus,
+    getAllBooking,
+    updateCategory,
+    deletedCategory
+
 }
