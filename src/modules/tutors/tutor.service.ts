@@ -87,7 +87,7 @@ const tutorDashboardCardData = async (tutorId: string) => {
             }
         }),
         prisma.booking.aggregate({
-            where: { bookingStatus: "COMPLETED", tutorProfile: {userId:tutorId} },
+            where: { bookingStatus: "COMPLETED", tutorProfile: { userId: tutorId } },
             _sum: { totalPrice: true }
         }),
         prisma.tutorProfile.aggregate({
@@ -108,16 +108,16 @@ const tutorDashboardCardData = async (tutorId: string) => {
 const getSlotChartData = async (tutorId: string) => {
     console.log(tutorId)
     const booking = await prisma.booking.findMany({
-        where:{tutorProfileId:tutorId}
+        where: { tutorProfileId: tutorId }
     });
 
     console.log("booking", booking)
     const result = await prisma.booking.groupBy({
         by: ['createdAt'],
-        where:{
-          tutorProfile:{
-            userId:tutorId
-          }
+        where: {
+            tutorProfile: {
+                userId: tutorId
+            }
         },
         _sum: {
             totalPrice: true
@@ -268,6 +268,65 @@ const GetSingleTutorProfileById = async (id: string) => {
         }
     })
 }
+const getTutorBooking = async (id: string, { page, skip, limit }: { page: number, skip: number, limit: number }) => {
+
+    const tutor = await prisma.user.findUniqueOrThrow({
+        where: { id },
+        select: {
+            tutorProfiles: {
+                select: {
+                    id: true
+                }
+            }
+        }
+    });
+    if (!tutor.tutorProfiles[0]) return "Tutor Not Found"
+    const tutorId = tutor.tutorProfiles[0].id as string
+    const result = await prisma.booking.findMany({
+        take: limit,
+        skip,
+        where: {
+            tutorProfileId: tutorId
+        },
+        select: {
+            bookingStatus: true,
+            paymentStatus: true,
+            totalPrice: true,
+            tutorProfile: {
+                select: {
+                    name: true,
+
+                }
+            },
+            tutorSlot: {
+                select: {
+                    duration: true,
+                    startTime: true,
+                    endTime: true,
+                    teachingMode: true
+                }
+            },
+            user: {
+                select: {
+                    email: true
+                }
+            }
+        },
+        orderBy: { createdAt: 'asc' }
+    })
+
+    const total = await prisma.booking.count({ where: { tutorProfileId: tutorId } });
+
+    return {
+        result,
+        pagination: {
+            page,
+            limit,
+            total,
+            totalPage: Math.ceil(total / limit)
+        }
+    }
+}
 
 
 
@@ -284,5 +343,6 @@ export const tutorService = {
     tutorProfileUpdateById,
     tutorProfileDeleteById,
     getAllTutorProfile,
-    GetSingleTutorProfileById
+    GetSingleTutorProfileById,
+    getTutorBooking
 };

@@ -191,6 +191,21 @@ const GetSingleTutorProfileById = async (req: Request, res: Response, next: Next
         next(error)
     }
 }
+const getTutorBooking = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if(!req.user) return "User not authenticated";
+        const {page,skip,limit} = PaginationOptions(req.query)
+        const id = req.user?.id;
+        console.log("user Id :", id)
+        const tutorBooking = await tutorService.getTutorBooking(id, {page,skip,limit});
+        res.status(200).json({
+            message: 'Tutor Booking Get successfully',
+            data: tutorBooking
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 
@@ -210,5 +225,6 @@ export const tutorController = {
     tutorProfileUpdateById,
     tutorProfileDeleteById,
     getAllTutorProfile,
-    GetSingleTutorProfileById
+    GetSingleTutorProfileById,
+    getTutorBooking
 };

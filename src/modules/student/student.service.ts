@@ -1,4 +1,6 @@
+import { Review } from "../../../generated/prisma/client"
 import { prisma } from "../../../lib/prisma"
+import { timeStringToDate } from "../../helper/timeStringToDate"
 
 const getBookingByOwnUser = async (id: string, page: number, limit: number, skip: number) => {
 
@@ -8,6 +10,7 @@ const getBookingByOwnUser = async (id: string, page: number, limit: number, skip
         where: { userId: id },
 
         select: {
+            id: true,
             totalPrice: true,
             createdAt: true,
             paymentStatus: true,
@@ -20,6 +23,7 @@ const getBookingByOwnUser = async (id: string, page: number, limit: number, skip
             },
             tutorProfile: {
                 select: {
+                    id: true,
                     profileImage: true,
                     teachingMode: true
                 }
@@ -33,7 +37,7 @@ const getBookingByOwnUser = async (id: string, page: number, limit: number, skip
                 }
             },
 
-            review:true
+            review: true
 
 
 
@@ -60,7 +64,7 @@ const getBookingByOwnUser = async (id: string, page: number, limit: number, skip
 const getStudentDashboard = async (id: string) => {
     const [totalBooking, accountCreated, completedBooking, pendingBooking, cancelledBooking, totalPrice] = await Promise.all([
         prisma.booking.count(),
-        prisma.user.findFirst({where:{id}, select: { createdAt: true } }),
+        prisma.user.findFirst({ where: { id }, select: { createdAt: true } }),
         prisma.booking.count(
 
             {
@@ -96,12 +100,88 @@ const getStudentDashboard = async (id: string) => {
         completedBooking,
         pendingBooking,
         cancelledBooking,
-        totalSpent : totalPrice._sum.totalPrice || 0
+        totalSpent: totalPrice._sum.totalPrice || 0
     }
 }
 
+const chartData = async () => {
+    const result = await prisma.booking.groupBy({
+        by: ["createdAt"],
+
+        _sum: {
+            totalPrice: true
+        },
+        orderBy: { createdAt: "asc" }
+    })
+
+    const chart = result.map((item) => ({
+        date: item.createdAt.toLocaleDateString(),
+        price: item._sum.totalPrice
+    }))
+
+    return chart
+}
+
+const createReview = async (data: Review) => {
+    return await prisma.review.create({ data });
+}
+
+const upComingBooking = async (userId: string) => {
+    const now = new Date();
+
+    const booking = await prisma.booking.findMany({
+        where: {
+            userId
+        },
+
+        include: {
+            tutorSlot: true,
+            tutorProfile: true,
+            user: {
+                select: {
+                    name: true,
+                    email: true
+                }
+            }
+        }
+    });
+
+    return booking.filter((b) => {
+        const start = timeStringToDate(b.tutorSlot.startTime)
+        return start > now
+    })
+}
+const pastBooking = async (userId: string) => {
+    const now = new Date();
+
+    const booking = await prisma.booking.findMany({
+        where: {
+            userId
+        },
+
+        include: {
+            tutorSlot: true,
+            tutorProfile: true,
+            user: {
+                select: {
+                    name: true,
+                    email: true
+                }
+            }
+        }
+    });
+
+    return booking.filter((b) => {
+        const start = timeStringToDate(b.tutorSlot.startTime)
+        return start < now
+    })
+}
 
 export const studentService = {
     getBookingByOwnUser,
-    getStudentDashboard
+    getStudentDashboard,
+    chartData,
+    createReview,
+    upComingBooking,
+    pastBooking
 }
