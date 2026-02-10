@@ -21,7 +21,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', "PATCH"],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-// app.options("*", cors());
+app.options("*", cors());
 
 
 app.get('/health', (req, res) => {
