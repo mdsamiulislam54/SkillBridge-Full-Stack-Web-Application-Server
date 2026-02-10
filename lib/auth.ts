@@ -1,14 +1,14 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import { config } from "../src/config/config";
-console.log("Config APP URL:", config.appUrl);
+
+
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
 
     }),
-    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app"],
+    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app",'http://localhost:3000'],
 
     emailAndPassword: {
         enabled: true,
