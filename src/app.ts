@@ -21,7 +21,14 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', "PATCH"],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.options("*", cors());
+app.options("*", cors(
+    {
+        origin: ["http://localhost:3000", "https://skillbridge-chi-seven.vercel.app"],
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', "PATCH"],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    }
+));
 
 
 app.get('/health', (req, res) => {
