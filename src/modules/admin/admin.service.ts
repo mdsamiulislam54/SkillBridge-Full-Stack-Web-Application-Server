@@ -1,5 +1,5 @@
 
-import { prisma } from "../../../lib/prisma"
+import { prisma } from "../../../lib/prisma.js"
 import { userRole } from "../../middleware/authVerify"
 import { Category } from "../../type/category.type"
 

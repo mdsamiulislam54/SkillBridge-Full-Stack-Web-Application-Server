@@ -1,5 +1,5 @@
 import { Review } from "../../../generated/prisma/client"
-import { prisma } from "../../../lib/prisma"
+import { prisma } from "../../../lib/prisma.js"
 import { timeStringToDate } from "../../helper/timeStringToDate"
 
 const getBookingByOwnUser = async (id: string, page: number, limit: number, skip: number) => {

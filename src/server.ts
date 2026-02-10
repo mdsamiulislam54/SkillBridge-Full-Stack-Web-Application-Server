@@ -1,5 +1,5 @@
 
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 import app from "./app";
 import { config } from "./config/config";
 

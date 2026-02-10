@@ -1,6 +1,6 @@
 import { number } from "better-auth";
 import { Booking } from "../../../generated/prisma/client";
-import { prisma } from "../../../lib/prisma";
+import { prisma } from "../../../lib/prisma.js";
 
 const createBooking = async (payload: Booking) => {
     const slot = await prisma.tutorSlot.findUnique({

@@ -1,6 +1,6 @@
 import { TutorProfile } from "../../../generated/prisma/client";
 import { TutorProfileWhereInput } from "../../../generated/prisma/models";
-import { prisma } from "../../../lib/prisma";
+import { prisma } from "../../../lib/prisma.js";
 import { ITutorProfile } from "../../type/tutorProfileType";
 import { SlotsType } from "../../type/tutorSlots.type";
 
