@@ -8,7 +8,15 @@ export const auth = betterAuth({
         provider: "postgresql",
 
     }),
-    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app",'http://localhost:3000'],
+    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app", 'http://localhost:3000'],
+
+    cookie: {
+        name: "__Secure-better-auth.session_token",
+        secure: true,
+        httpOnly: true,
+        sameSite: "none", 
+        path: "/",
+    },
 
     emailAndPassword: {
         enabled: true,
