@@ -8,7 +8,7 @@ export const auth = betterAuth({
         provider: "postgresql",
 
     }),
-    trustedOrigins: [config.appUrl || "http://localhost:3000"],
+    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app"],
 
     emailAndPassword: {
         enabled: true,
