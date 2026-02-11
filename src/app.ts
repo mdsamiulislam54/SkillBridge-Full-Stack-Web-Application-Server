@@ -14,7 +14,7 @@ import { BookingRouter } from "./modules/booking/booking.route";
 
 dotenv.config();
 const app: Application = express();
-
+app.set("trust proxy", 1);
 app.use(cors({
     origin: ["http://localhost:3000", "https://skillbridge-chi-seven.vercel.app"],
     credentials: true,

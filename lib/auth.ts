@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
+import { config } from "../src/config/config";
 
 
 export const auth = betterAuth({
@@ -8,16 +9,25 @@ export const auth = betterAuth({
         provider: "postgresql",
 
     }),
-    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app", 'http://localhost:3000'],
 
-    cookie: {
-        name: "__Secure-better-auth.session_token",
-        secure: true,
-        httpOnly: true,
-        sameSite: "none", 
-        path: "/",
+    advanced: {
+        crossSubDomainCookies: {
+            enabled: true,
+            domain: config.betterAuthUrl
+        },
+        cookies: {
+            session_token: {
+                name: "__Secure-better-auth.session_token",
+                attributes: {
+                    secure: true,
+                    httpOnly: true,
+                    sameSite: "none",
+                    path: "/",
+                }
+            }
+        }
     },
-
+    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app", 'http://localhost:3000', config.betterAuthUrl],
     emailAndPassword: {
         enabled: true,
         autoSignIn: true,
