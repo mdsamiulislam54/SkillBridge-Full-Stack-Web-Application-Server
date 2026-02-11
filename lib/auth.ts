@@ -13,13 +13,13 @@ export const auth = betterAuth({
     advanced: {
         crossSubDomainCookies: {
             enabled: true,
-            domain: config.betterAuthUrl
+            domain: "skillbridge-full-stack-web-application.onrender.com"
         },
         cookies: {
             session_token: {
                 name: "__Secure-better-auth.session_token",
                 attributes: {
-                    secure: false,
+                    secure: true,
                     httpOnly: true,
                     sameSite: "none",
                     path: "/",
