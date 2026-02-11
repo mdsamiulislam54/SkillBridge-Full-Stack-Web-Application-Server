@@ -19,7 +19,7 @@ export const auth = betterAuth({
             session_token: {
                 name: "__Secure-better-auth.session_token",
                 attributes: {
-                    secure: true,
+                    secure: false,
                     httpOnly: true,
                     sameSite: "none",
                     path: "/",
