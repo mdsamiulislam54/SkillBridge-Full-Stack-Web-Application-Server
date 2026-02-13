@@ -15,30 +15,26 @@ export const auth = betterAuth({
         },
         cookies: {
             session_token: {
-               
-                name: config.isProduction 
-                    ? "__Secure-better-auth.session_token" 
+
+                name: config.isProduction
+                    ? "__Secure-better-auth.session_token"
                     : "better-auth.session_token",
                 attributes: {
-                    secure: config.isProduction, 
+                    secure: true,
                     httpOnly: true,
-                    sameSite: config.isProduction ? "none" : "lax",
+                    sameSite: "none",
                     path: "/",
-                    domain: config.isProduction 
-                        ? ".onrender.com" 
-                        : "localhost",
+                    domain: ".onrender.com",
                 }
             }
         }
     },
-    
+
     trustedOrigins: [
-        config.appUrl,
         'http://localhost:3000',
         'https://skillbridge-chi-seven.vercel.app',
-        'https://skillbridge-full-stack-web-application.onrender.com'
     ],
-    
+
     emailAndPassword: {
         enabled: true,
         autoSignIn: true,

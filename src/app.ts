@@ -37,26 +37,17 @@ app.use(session({
 
 app.set("trust proxy", 1);
 app.use(cors({
-    origin: function (origin, callback) {
-        const allowedOrigins = [
-            'http://localhost:3000',
-            'https://skillbridge-chi-seven.vercel.app',
-            config.appUrl,
-            config.betterAuthUrl
-        ].filter(Boolean);
-
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('CORS not allowed'));
-        }
-    },
+    origin: [
+        'https://skillbridge-chi-seven.vercel.app',
+        'http://localhost:3000'
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
     exposedHeaders: ['Set-Cookie']
 }));
 
+app.options('*', cors())
 
 app.get('/health', (req, res) => {
     res.status(200).json({
