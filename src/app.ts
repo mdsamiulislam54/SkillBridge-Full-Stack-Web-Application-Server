@@ -47,8 +47,6 @@ app.use(cors({
     exposedHeaders: ['Set-Cookie']
 }));
 
-app.options('*', cors())
-
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'OK',
@@ -58,13 +56,12 @@ app.get('/health', (req, res) => {
         time: new Date().toISOString()
     });
 });
+app.all('/api/auth/*splat', toNodeHandler(auth))
 app.use('/api/tutor', tutorRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/student', studentRoute);
 app.use('/api/booking', BookingRouter);
-app.all('/api/auth/*splat', toNodeHandler(auth), (req, res) => {
-    res.send({ "Better Auth ": req });
-});
+
 
 app.use(errorHandler)
 
