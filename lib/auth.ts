@@ -13,7 +13,7 @@ export const auth = betterAuth({
     advanced: {
         crossSubDomainCookies: {
             enabled: true,
-            domain: "skillbridge-full-stack-web-application.onrender.com"
+            domain: "https://skillbridge-full-stack-web-application.onrender.com"
         },
         cookies: {
             session_token: {
@@ -27,7 +27,7 @@ export const auth = betterAuth({
             }
         }
     },
-    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app", 'http://localhost:3000', config.betterAuthUrl],
+    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app", 'http://localhost:3000', config.betterAuthUrl,'https://skillbridge-full-stack-web-application.onrender.com'],
     emailAndPassword: {
         enabled: true,
         autoSignIn: true,
