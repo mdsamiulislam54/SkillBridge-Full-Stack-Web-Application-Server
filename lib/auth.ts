@@ -2,58 +2,45 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { config } from "../src/config/config";
+import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
-    baseURL: config.betterAuthUrl,
+    baseURL: config.betterAuthUrl || "https://skillbridge-server-inky.vercel.app",
     basePath: '/api/auth',
 
     advanced: {
         cookiePrefix: "better-auth",
-        useSecureCookies: config.isProduction,
-        disableCSRFCheck: true,
+        useSecureCookies: true,
         crossSubDomainCookies: {
-            enabled: false,
+            enabled: true,
+          
         },
         cookies: {
             session_token: {
                 attributes: {
                     secure: true,
                     httpOnly: true,
-                    sameSite: "none",
+                    sameSite: "none",  
                     path: "/",
-                    domain: ".vercel.app",
+                  
                 }
             }
-        }
+        },
+        //
+        disableCSRFCheck: true,
     },
 
-
-    trustedOrigins: async (request) => {
-        const origin = request?.headers.get("origin");
-        const allowedOrigins = [
-            process.env.APP_URL,
-            process.env.BETTER_AUTH_URL,
-            "http://localhost:3000",
-            "http://localhost:4000",
-            "http://localhost:5000",
-            "https://skillbridge-chi-seven.vercel.app",
-            "https://skillbridge-server-inky.vercel.app"
-        ].filter(Boolean);
-
-        // Check if origin matches allowed origins or Vercel pattern
-        if (
-            !origin ||
-            allowedOrigins.includes(origin) ||
-            /^https:\/\/.*\.vercel\.app$/.test(origin)
-        ) {
-            return [origin];
-        }
-
-        return [];
-    },
+  
+    trustedOrigins: [
+        "https://skillbridge-chi-seven.vercel.app",
+        "https://skillbridge-server-inky.vercel.app",
+        "http://localhost:3000",
+        "http://localhost:4000",
+        "http://localhost:5000"
+    ],
 
     emailAndPassword: {
         enabled: true,
@@ -85,6 +72,7 @@ export const auth = betterAuth({
             enabled: true,
             maxAge: 60 * 60
         }
-    }
-});
+    },
 
+    plugins:[nextCookies()]
+});
