@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { config } from "../src/config/config";
-// import { nextCookies } from "better-auth/next-js";
+import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -14,6 +14,7 @@ export const auth = betterAuth({
     advanced: {
         cookiePrefix: "better-auth",
         useSecureCookies: true,
+        trustedOrigins:true,
         crossSubDomainCookies: {
             enabled: true,
           
@@ -68,5 +69,5 @@ export const auth = betterAuth({
     },
 
 
-    // plugins:[nextCookies()]
+    plugins:[nextCookies()]
 });
