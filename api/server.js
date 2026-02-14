@@ -289,40 +289,29 @@ var auth = betterAuth({
   basePath: "/api/auth",
   advanced: {
     cookiePrefix: "better-auth",
-    useSecureCookies: config2.isProduction,
-    disableCSRFCheck: true,
+    useSecureCookies: true,
     crossSubDomainCookies: {
-      enabled: false
+      enabled: true
     },
     cookies: {
       session_token: {
-        name: config2.isProduction ? "__Secure-better-auth.session_token" : "better-auth.session_token",
         attributes: {
           secure: true,
           httpOnly: true,
-          sameSite: "none",
-          path: "/",
-          domain: ".onrender.com"
+          sameSite: "lax",
+          path: "/"
         }
       }
-    }
+    },
+    disableCSRFCheck: true
   },
-  trustedOrigins: async (request) => {
-    const origin = request?.headers.get("origin");
-    const allowedOrigins = [
-      process.env.APP_URL,
-      process.env.BETTER_AUTH_URL,
-      "http://localhost:3000",
-      "http://localhost:4000",
-      "http://localhost:5000",
-      "https://skillbridge-chi-seven.vercel.app"
-      // "https://prisma-blog-server-navy.vercel.app",
-    ].filter(Boolean);
-    if (!origin || allowedOrigins.includes(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin)) {
-      return [origin];
-    }
-    return [];
-  },
+  trustedOrigins: [
+    "https://skillbridge-chi-seven.vercel.app",
+    "https://skillbridge-server-inky.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:4000",
+    "http://localhost:5000"
+  ],
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -345,13 +334,8 @@ var auth = betterAuth({
         required: false
       }
     }
-  },
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 60 * 60
-    }
   }
+  // plugins:[nextCookies()]
 });
 
 // src/modules/tutors/tutor.route.ts
@@ -863,19 +847,19 @@ var tutorController = {
 function AuthVerify(...role) {
   return async (req, res, next) => {
     try {
-      const session2 = await auth.api.getSession({ headers: req.headers });
-      if (!session2 || !session2.user) {
+      const session = await auth.api.getSession({ headers: req.headers });
+      if (!session || !session.user) {
         return res.status(401).send({ success: false, message: "Your are not authorized Please Login " });
       }
-      if (!role.includes(session2.user.role)) {
+      if (!role.includes(session.user.role)) {
         return res.status(401).send({ success: false, message: "You are not authorized to access this resource" });
       }
       req.user = {
-        id: session2.user.id,
-        name: session2.user.name,
-        role: session2.user.role,
-        email: session2.user.email,
-        emailVerified: session2.user.emailVerified
+        id: session.user.id,
+        name: session.user.name,
+        role: session.user.role,
+        email: session.user.email,
+        emailVerified: session.user.emailVerified
       };
       next();
     } catch (error) {
@@ -1579,48 +1563,31 @@ bookingRoute.post("/", bookingController.createBooking);
 var BookingRouter = bookingRoute;
 
 // src/app.ts
-import session from "express-session";
 import cookieParser from "cookie-parser";
 dotenv2.config();
 var app = express5();
 app.use(cookieParser(config2.betterAuthSecret));
 app.use(express5.json());
-app.use(session({
-  secret: config2.betterAuthSecret || "",
-  resave: false,
-  saveUninitialized: false,
-  name: "skillbridge.sid",
-  proxy: true,
-  cookie: {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    maxAge: 1e3 * 60 * 60 * 24 * 7,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    domain: process.env.NODE_ENV === "production" ? ".onrender.com" : "localhost",
-    path: "/"
-  }
-}));
 app.set("trust proxy", 1);
 app.use(cors({
   origin: [
     "https://skillbridge-chi-seven.vercel.app",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://localhost:5000"
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   exposedHeaders: ["Set-Cookie"]
 }));
+app.all("/api/auth/*splat", toNodeHandler(auth));
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "OK",
     environment: config2.isProduction ? "production" : "development",
-    sessionID: req.sessionID,
     cookies: req.cookies,
     time: (/* @__PURE__ */ new Date()).toISOString()
   });
 });
-app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/api/tutor", tutorRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/student", studentRoute);

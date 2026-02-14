@@ -2,13 +2,13 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { config } from "../src/config/config";
-import { nextCookies } from "better-auth/next-js";
+// import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
-    baseURL: config.betterAuthUrl || "https://skillbridge-server-inky.vercel.app",
+    baseURL: config.betterAuthUrl,
     basePath: '/api/auth',
 
     advanced: {
@@ -23,7 +23,7 @@ export const auth = betterAuth({
                 attributes: {
                     secure: true,
                     httpOnly: true,
-                    sameSite: "none",  
+                    sameSite: "lax",  
                     path: "/",
                   
                 }
@@ -68,5 +68,5 @@ export const auth = betterAuth({
     },
 
 
-    plugins:[nextCookies()]
+    // plugins:[nextCookies()]
 });

@@ -15,19 +15,21 @@ import { config } from "./config/config";
 dotenv.config();
 const app: Application = express();
 app.use(cookieParser(config.betterAuthSecret));
-app.all('/api/auth/*splat', toNodeHandler(auth))
+
 app.use(express.json());
 app.set("trust proxy", 1);
 app.use(cors({
     origin: [
         'https://skillbridge-chi-seven.vercel.app',
-        'http://localhost:3000'
+        'http://localhost:3000',
+        'http://localhost:5000'
+        
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     exposedHeaders: ['Set-Cookie']
 }));
-
+app.all('/api/auth/*splat', toNodeHandler(auth))
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'OK',
@@ -37,12 +39,7 @@ app.get('/health', (req, res) => {
     });
 });
 
-app.get("/api/me", async (req, res) => {
- 	const session = await auth.api.getSession({
-      headers: fromNodeHeaders(req.headers),
-    });
-	return res.json(session);
-});
+
 
 
 app.use('/api/tutor', tutorRoute);
