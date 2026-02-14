@@ -2,15 +2,16 @@
   "name": "skillbridge-server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.js",
+  "main": "api/server.js",
   "type": "module",
   "scripts": {
     "dev": "npx tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "npx tsx watch  dist/src/server.js",
+    "start": "node api/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-      "postinstall": "prisma generate" 
+    "seed:admin": "npx tsx src/scripts/seedAdmin.ts",
+    "build": "prisma generate && tsup src/server.ts --format esm --platform node --target node20 --outDir api --external pg-native",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "@types/node": "^25.1.0",
     "@types/pg": "^8.16.0",
     "prisma": "^7.3.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },

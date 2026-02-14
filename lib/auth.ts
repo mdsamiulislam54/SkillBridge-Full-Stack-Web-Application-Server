@@ -8,10 +8,14 @@ export const auth = betterAuth({
         provider: "postgresql",
     }),
     baseURL: config.betterAuthUrl,
+    basePath: '/api/auth',
 
     advanced: {
+        cookiePrefix: "better-auth",
+        useSecureCookies: config.isProduction,
+        disableCSRFCheck: true,
         crossSubDomainCookies: {
-            enabled: true,
+            enabled: false,
         },
         cookies: {
             session_token: {
@@ -30,10 +34,30 @@ export const auth = betterAuth({
         }
     },
 
-    trustedOrigins: [
-        'http://localhost:3000',
-        'https://skillbridge-chi-seven.vercel.app',
-    ],
+
+    trustedOrigins: async (request) => {
+        const origin = request?.headers.get("origin");
+        const allowedOrigins = [
+            process.env.APP_URL,
+            process.env.BETTER_AUTH_URL,
+            "http://localhost:3000",
+            "http://localhost:4000",
+            "http://localhost:5000",
+            "https://skillbridge-chi-seven.vercel.app",
+            // "https://prisma-blog-server-navy.vercel.app",
+        ].filter(Boolean);
+
+        // Check if origin matches allowed origins or Vercel pattern
+        if (
+            !origin ||
+            allowedOrigins.includes(origin) ||
+            /^https:\/\/.*\.vercel\.app$/.test(origin)
+        ) {
+            return [origin];
+        }
+
+        return [];
+    },
 
     emailAndPassword: {
         enabled: true,
@@ -59,4 +83,12 @@ export const auth = betterAuth({
             }
         }
     },
+
+    session: {
+        cookieCache: {
+            enabled: true,
+            maxAge: 60 * 60
+        }
+    }
 });
+
