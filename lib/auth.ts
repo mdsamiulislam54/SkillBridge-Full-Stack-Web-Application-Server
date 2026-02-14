@@ -29,7 +29,7 @@ export const auth = betterAuth({
                 }
             }
         },
-        //
+        
         disableCSRFCheck: true,
     },
 
@@ -67,12 +67,6 @@ export const auth = betterAuth({
         }
     },
 
-    session: {
-        cookieCache: {
-            enabled: true,
-            maxAge: 60 * 60
-        }
-    },
 
     plugins:[nextCookies()]
 });
