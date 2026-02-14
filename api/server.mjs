@@ -281,6 +281,7 @@ var config2 = {
 };
 
 // lib/auth.ts
+import { nextCookies } from "better-auth/next-js";
 var auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql"
@@ -290,6 +291,7 @@ var auth = betterAuth({
   advanced: {
     cookiePrefix: "better-auth",
     useSecureCookies: true,
+    trustedOrigins: true,
     crossSubDomainCookies: {
       enabled: true
     },
@@ -298,7 +300,7 @@ var auth = betterAuth({
         attributes: {
           secure: true,
           httpOnly: true,
-          sameSite: "lax",
+          sameSite: "None",
           path: "/"
         }
       }
@@ -307,7 +309,7 @@ var auth = betterAuth({
   },
   trustedOrigins: [
     "https://skillbridge-chi-seven.vercel.app",
-    "https://skillbridge-server-inky.vercel.app",
+    "https://skillbridge-app-api-inky.vercel.app",
     "http://localhost:3000",
     "http://localhost:4000",
     "http://localhost:5000"
@@ -334,8 +336,8 @@ var auth = betterAuth({
         required: false
       }
     }
-  }
-  // plugins:[nextCookies()]
+  },
+  plugins: [nextCookies()]
 });
 
 // src/modules/tutors/tutor.route.ts

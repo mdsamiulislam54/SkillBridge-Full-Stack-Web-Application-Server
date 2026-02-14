@@ -6,30 +6,32 @@
     "moduleResolution": "bundler",
     "target": "es2023",
     "types": [],
-    "lib": [
-      "esnext"
-    ],
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    // "lib": [
+    //   "esnext"
+    // ],
+    // "sourceMap": true,
+    // "declaration": true,
+    // "declarationMap": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+
     "strict": true,
+
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "esModuleInterop": true,
+
   },
-  "include": [
-    "src/**/*",
-    "lib/**/*",
-    "generated",
-    "lib"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "generated"
-  ]
+  // "include": [
+  //   "src/**/*",
+  //   "lib/**/*",
+  //   "generated",
+  //   "lib"
+  // ],
+  // "exclude": [
+  //   "node_modules",
+  //   "dist",
+  //   "generated"
+  // ]
 }

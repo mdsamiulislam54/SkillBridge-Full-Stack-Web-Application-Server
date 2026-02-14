@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { auth } from "../../lib/auth";
+import { fromNodeHeaders } from "better-auth/node";
 export const enum userRole {
     STUDENT = "STUDENT",
     ADMIN = "ADMIN",
@@ -23,7 +24,8 @@ declare global {
 function AuthVerify(...role: userRole[]) {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const session = await auth.api.getSession({ headers: req.headers as any });
+            const headers = fromNodeHeaders(req.headers);
+            const session = await auth.api.getSession({ headers });
             if (!session || !session.user) {
                 return res.status(401).send({ success: false, message: "Your are not authorized Please Login " });
             }
@@ -33,11 +35,11 @@ function AuthVerify(...role: userRole[]) {
             req.user = {
                 id: session.user.id,
                 name: session.user.name,
-                role: session.user.role as string,
+                role: session.user?.role as string,
                 email: session.user.email,
-                emailVerified: session.user.emailVerified
+                emailVerified: session.user.emailVerified,
             }
-            
+
             next()
         } catch (error) {
             next(error)
