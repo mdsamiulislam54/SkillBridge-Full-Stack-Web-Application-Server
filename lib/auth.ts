@@ -19,16 +19,12 @@ export const auth = betterAuth({
         },
         cookies: {
             session_token: {
-
-                name: config.isProduction
-                    ? "__Secure-better-auth.session_token"
-                    : "better-auth.session_token",
                 attributes: {
                     secure: true,
                     httpOnly: true,
                     sameSite: "none",
                     path: "/",
-                    domain: ".onrender.com",
+                    domain: ".vercel.app",
                 }
             }
         }
@@ -44,7 +40,7 @@ export const auth = betterAuth({
             "http://localhost:4000",
             "http://localhost:5000",
             "https://skillbridge-chi-seven.vercel.app",
-            // "https://prisma-blog-server-navy.vercel.app",
+            "https://skillbridge-server-inky.vercel.app"
         ].filter(Boolean);
 
         // Check if origin matches allowed origins or Vercel pattern
