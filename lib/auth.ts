@@ -1,42 +1,25 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import { config } from "../src/config/config";
-import { nextCookies } from "better-auth/next-js";
-
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
-    baseURL: process.env.BETTER_AUTH_URL!,
     trustedOrigins: [process.env.APP_URL!],
-    basePath: '/api/auth',
-
-    advanced: {
-        cookiePrefix: "better-auth",
-        useSecureCookies: true,
-        trustedOrigins: true,
-        crossSubDomainCookies: {
-            enabled: true,
-
-        },
-        cookies: {
-            session_token: {
-                attributes: {
-                    secure: true,
-                    httpOnly: true,
-                    sameSite: 'None',
-                    path: "/",
-
-                }
-            }
-        },
-
-        disableCSRFCheck: true,
-    },
-
-
-
+    // advanced: {
+    //     crossSubDomainCookies: {
+    //         enabled: true,
+    //         domain: "skillbridge-chi-seven.vercel.app",
+    //     },
+    //     cookiePrefix: "better-auth",
+    //     useSecureCookies: true,
+    //     defaultCookieAttributes: {
+    //         sameSite: "none",
+    //         secure: true,
+    //         httpOnly: true,
+    //     }
+    // },
+   
     emailAndPassword: {
         enabled: true,
         autoSignIn: true,
@@ -62,6 +45,4 @@ export const auth = betterAuth({
         }
     },
 
-
-    plugins: [nextCookies()]
 });

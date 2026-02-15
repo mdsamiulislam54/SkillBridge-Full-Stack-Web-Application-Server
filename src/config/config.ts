@@ -1,7 +1,5 @@
 import dotenv from 'dotenv';
-if (process.env.NODE_ENV !== 'production') {
-    dotenv.config();
-}
+dotenv.config();
 
 export const config = {
     databaseUrl: process.env.DATABASE_URL || "",
