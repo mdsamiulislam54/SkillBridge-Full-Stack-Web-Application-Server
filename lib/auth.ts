@@ -6,19 +6,19 @@ export const auth = betterAuth({
         provider: "postgresql",
     }),
     trustedOrigins: [process.env.APP_URL!],
-    // advanced: {
-    //     crossSubDomainCookies: {
-    //         enabled: true,
-    //         domain: "skillbridge-chi-seven.vercel.app",
-    //     },
-    //     cookiePrefix: "better-auth",
-    //     useSecureCookies: true,
-    //     defaultCookieAttributes: {
-    //         sameSite: "none",
-    //         secure: true,
-    //         httpOnly: true,
-    //     }
-    // },
+    advanced: {
+        crossSubDomainCookies: {
+            enabled: true,
+            domain: "skillbridge-chi-seven.vercel.app",
+        },
+        cookiePrefix: "better-auth",
+        useSecureCookies: true,
+        defaultCookieAttributes: {
+            sameSite: "none",
+            secure: true,
+            httpOnly: true,
+        }
+    },
    
     emailAndPassword: {
         enabled: true,
