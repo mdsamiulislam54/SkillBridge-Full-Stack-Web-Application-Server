@@ -5,7 +5,7 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
-    trustedOrigins: [process.env.APP_URL!],
+    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app"],
     advanced: {
         crossSubDomainCookies: {
             enabled: true,
@@ -19,7 +19,7 @@ export const auth = betterAuth({
             httpOnly: true,
         }
     },
-   
+
     emailAndPassword: {
         enabled: true,
         autoSignIn: true,
