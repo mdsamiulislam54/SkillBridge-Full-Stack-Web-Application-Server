@@ -24,7 +24,7 @@ app.use(cors({
         "http://localhost:5000",
         "http://localhost:3000",
         "https://skillbridge-chi-seven.vercel.app",
-        "https://skillbridge-chi-seven.vercel.app",
+        "https://skillbridge-app-api-inky.vercel.app",
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
