@@ -16,7 +16,7 @@ export const auth = betterAuth({
         sessionToken: {
             attributes: {
                 sameSite: "lax",
-                secure: true, // production HTTPS
+                secure: true, 
                 httpOnly: true,
                 path: "/",
             },
