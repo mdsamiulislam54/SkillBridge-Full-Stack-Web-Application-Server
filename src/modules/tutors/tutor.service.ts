@@ -24,8 +24,8 @@ const createTutorSlots = async (slotsData: SlotsType, tutorId: string) => {
             duration: slotsData.duration,
             teachingMode: slotsData.teachingMode,
             category: slotsData.category,
-            hourlyRate: Number(slotsData.hourlyRate) || 0,
-            maxStudent: Number(slotsData.maxStudents) || 0,
+            hourlyRate: Number(slotsData.hourlyRate),
+            maxStudent: Number(slotsData.maxStudent),
             isActive: slotsData.isActive,
             tutorId: tutor.id
         }
@@ -177,7 +177,7 @@ const tutorProfileDeleteById = async (id: string) => {
     })
 }
 
-const getAllTutorProfile = async (payload: { limit: number, skip: number, search: string, page: number }) => {
+const getAllTutorProfile = async (payload: { limit: number, skip: number, search: string, page: number, filter: string }) => {
 
     let whereConditions: TutorProfileWhereInput[] = [];
 
@@ -217,9 +217,37 @@ const getAllTutorProfile = async (payload: { limit: number, skip: number, search
                     }
                 },
 
+                {
+                    teachingMode: {
+                        contains: payload.search as string,
+                        mode: "insensitive"
+                    }
+                }
+
             ]
         })
     }
+    if (payload.filter) {
+        if (payload.filter === "all") {
+        
+        } else {
+            whereConditions.push({
+                OR: [
+                    {
+                        tutorSlots: {
+                            some: {
+                                category: {
+                                    contains: payload.filter,
+                                    mode: "insensitive",
+                                },
+                            },
+                        },
+                    },
+                ],
+            })
+        }
+    }
+
 
 
 

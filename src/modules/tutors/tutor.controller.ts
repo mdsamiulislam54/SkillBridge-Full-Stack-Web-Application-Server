@@ -161,15 +161,16 @@ const tutorProfileDeleteById = async (req: Request, res: Response, next: NextFun
 }
 const getAllTutorProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { skip, limit, search ,page} = PaginationOptions(req.query);
+        const { skip, limit, search ,page,filter} = PaginationOptions(req.query);
         const payload = {
             skip,
             limit,
             search,
-            page
+            page,
+            filter
         }
 
-    
+    console.log('_________payload', payload)
         const tutorProfile = await tutorService.getAllTutorProfile(payload);
         res.status(200).json({
             message: 'Tutor Profile Get successfully',

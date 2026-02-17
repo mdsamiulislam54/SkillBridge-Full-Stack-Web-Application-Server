@@ -5,8 +5,8 @@ model TutorSlot {
   endTime      String
   duration     String
   teachingMode String
-  maxStudent   Int
-  hourlyRate   Int
+  maxStudent   Int  @default(50)
+  hourlyRate   Int @default(60)
   category     String
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())

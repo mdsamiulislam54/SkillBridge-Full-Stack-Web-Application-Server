@@ -5,17 +5,22 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
-    trustedOrigins: ["https://skillbridge-chi-seven.vercel.app", "http://localhost:3000", "https://skillbridge-app-api-inky.vercel.app"],
-    advanced: {
-        cookies: {
-            _Session: {
-                attributes: {
-                    httpOnly: true,
-                    sameSite: 'None',
-                    secure: process.env.NODE_ENV === 'production' ? true : false
-                }
-            }
-        }
+    baseURL: process.env.BETTER_AUTH_URL,
+    trustedOrigins: [
+        "https://skillbridge-chi-seven.vercel.app",
+        "http://localhost:3000",
+
+
+    ],
+    cookies: {
+        sessionToken: {
+            attributes: {
+                sameSite: "lax",
+                secure: true, // production HTTPS
+                httpOnly: true,
+                path: "/",
+            },
+        },
     },
 
     emailAndPassword: {

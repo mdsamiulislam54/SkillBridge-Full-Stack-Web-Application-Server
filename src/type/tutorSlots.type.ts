@@ -3,7 +3,7 @@ export type SlotsType = {
   endTime:string
   duration: string   
   teachingMode: string
-  maxStudents: number
+  maxStudent: number
   isActive: boolean
   tutorId: string 
   id: string 

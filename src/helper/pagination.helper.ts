@@ -1,9 +1,10 @@
- export type PaginationOptionsType = {
+export type PaginationOptionsType = {
     page?: number;
     limit?: number;
     search?: string;
-    sort?:string;
-    skip?:number 
+    sort?: string;
+    skip?: number;
+    filter?: string
 };
 
 
@@ -12,7 +13,8 @@ export const PaginationOptions = (options: PaginationOptionsType) => {
     const limit = Number(options.limit) || 6
     const skip = (page - 1) * limit
     const search = options.search || ''
-    const sort  = options.sort || 'all'
+    const sort = options.sort || 'all'
+    const filter = options.filter || 'all'
 
-    return { page, limit, skip, search,sort  }
+    return { page, limit, skip, search, sort, filter }
 }
